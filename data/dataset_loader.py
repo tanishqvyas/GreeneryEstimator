@@ -2,9 +2,7 @@ import os
 from PIL import Image
 import random
 import urllib.request
-# import cStringIO
 import cairo
-#from geofunctions import *
 
 
 class TileServer(object):
@@ -54,7 +52,41 @@ class TileServer(object):
         return result
 
 if __name__ == "__main__":
+
     ts = TileServer()
-    im = ts.tile_as_image(23446,15193, 15)
-    im.show()
-    im.save()
+    
+    # Hardcoded for bangalore
+    meta_data = {
+
+        "begin_x":23413,
+        "begin_y":15166,
+        "end_x":23415,
+        "end_y":15170,
+        "zoom_level": 15
+    }
+
+
+    # Getting all the images of a region
+    # For zoom level 15
+    # By dividing it into sub-tiles
+    # Tile data from : https://www.maptiler.com/google-maps-coordinates-tile-bounds-projection/
+    # Code Inspiration : https://docs.microsoft.com/en-us/bingmaps/rest-services/imagery/get-a-static-map 
+
+    count = 0
+
+    for i in range(meta_data["begin_x"],meta_data["end_x"]+1):
+        for j in range(meta_data["begin_y"], meta_data["end_y"]+1):
+
+            # Fetching the map-tile
+            im = ts.tile_as_image(i,j,meta_data["zoom_level"])
+
+            # im.show()
+
+            # Saving the image
+            path = os.path.join("images","sector"+str(count)+".jpg")
+            im.save(path)
+
+            count += 1
+
+
+
