@@ -3,13 +3,15 @@ from PIL import Image
 import random
 import urllib.request
 import cairo
+import time
 
 
 class TileServer(object):
-    def __init__(self):
+
+    def __init__(self, layers):
         self.imdict = {}
         self.surfdict = {}
-        self.layers = 'SATELLITE'
+        self.layers = layers
         self.path = './'
         self.urltemplate = 'http://ecn.t{4}.tiles.virtualearth.net/tiles/{3}{5}?g=0'
         self.layerdict = {'SATELLITE': 'a', 'HYBRID': 'h', 'ROADMAP': 'r'}
@@ -53,16 +55,16 @@ class TileServer(object):
 
 if __name__ == "__main__":
 
-    ts = TileServer()
+    ts = TileServer("SATELLITE")
     
     # Hardcoded for bangalore
     meta_data = {
 
-        "begin_x":23413,
-        "begin_y":15166,
-        "end_x":23415,
-        "end_y":15170,
-        "zoom_level": 15
+        "begin_x":46863,
+        "begin_y":30352,
+        "end_x":46926,
+        "end_y":30423,
+        "zoom_level": 16
     }
 
 
@@ -77,16 +79,16 @@ if __name__ == "__main__":
     for i in range(meta_data["begin_x"],meta_data["end_x"]+1):
         for j in range(meta_data["begin_y"], meta_data["end_y"]+1):
 
-            # Fetching the map-tile
-            im = ts.tile_as_image(i,j,meta_data["zoom_level"])
+            # Fetching the map-tile for satellite image
+            im_s = ts.tile_as_image(i,j,meta_data["zoom_level"])
+            # im_r = tr.tile_as_image(i,j,meta_data["zoom_level"])
 
-            # im.show()
 
-            # Saving the image
-            path = os.path.join("images","sector"+str(count)+".jpg")
-            im.save(path)
+
+            # Saving the image/satellite
+            path_s = os.path.join("images","satellite","sector"+str(count)+".jpg")
+            im_s.save(path_s)
+
 
             count += 1
-
-
-
+    
