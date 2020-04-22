@@ -55,7 +55,7 @@ class TileServer(object):
 
 if __name__ == "__main__":
 
-    ts = TileServer("SATELLITE")
+    ts = TileServer("ROADMAP")
     
     # Hardcoded for bangalore
     meta_data = {
@@ -81,14 +81,13 @@ if __name__ == "__main__":
 
             # Fetching the map-tile for satellite image
             im_s = ts.tile_as_image(i,j,meta_data["zoom_level"])
-            # im_r = tr.tile_as_image(i,j,meta_data["zoom_level"])
 
 
 
-            # Saving the image/satellite
-            path_s = os.path.join("images","satellite","sector"+str(count)+".jpg")
+            # Saving the images/satellite
+            path_s = os.path.join("images","roadmap","sector"+str(count)+".png")
             im_s.save(path_s)
 
-
+            print("The current count : ",count)
             count += 1
     
