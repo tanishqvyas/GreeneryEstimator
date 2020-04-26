@@ -2,6 +2,7 @@ import cv2
 import os
 import csv
 import time
+import pandas as pd
 
 
 
@@ -24,29 +25,30 @@ if __name__ == '__main__':
 	# Start the clock
 	start_time = time.time()
 
+	# Read in the data from CSV to modify
+	path_to_csv = os.path.join("csv","greenery_percentage.csv")
+	df = pd.read_csv(path_to_csv)
+
+
 	# Path to the image directory
 	path = os.path.join("images","satellite")
 
 	# Image resolution : 256 x 256 pixels
 	TOTAL_PIXELS = 65536
 
-	# Filepath
-	file_path = os.path.join("csv","greenery_percentage.csv")
-
-	# File handling
-	f = open(file_path, mode = "w", newline = '')
-	f_wr = csv.writer(f, delimiter = ",", quoting = csv.QUOTE_MINIMAL)
-	f_wr.writerow(['Sector', "Percentage Green"])
-
 
 	# A dictionary of images with key as sectorname
 	# Eg : image_list["sector30"]
 	image_list = load_images_from_folder(path)
 
-
+	count = 0
 	for sector, img in image_list.items():
 
+		print("Current count --------------------> ",count)
+		count += 1
 		print("Sector : ", sector)
+
+
 
 		green_pixel_count = 0
 
@@ -79,13 +81,17 @@ if __name__ == '__main__':
 		# Find greenery percentage
 		greenery_percentage = green_pixel_count*100/TOTAL_PIXELS
 
+		# Entering the number in dataframe
+		cur_sector = int(sector.replace("sector",""))
+		df["Greenery"][cur_sector] = greenery_percentage
 
-		# Enter data in file
-		f_wr = csv.writer(f, delimiter = ",", quoting = csv.QUOTE_MINIMAL)
-		f_wr.writerow([sector,greenery_percentage])
+
+		
 			
-
-	f.close()
+	# Selecting input columns of name and greenery
+	df = df[["Name","Greenery"]]	
+	print(df)
+	df.to_csv(os.path.join("csv","input.csv"), index=False)
 	print("--- %s seconds ---" % (time.time() - start_time))
 
 

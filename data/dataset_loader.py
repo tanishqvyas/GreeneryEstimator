@@ -4,6 +4,24 @@ import random
 import urllib.request
 import cairo
 import time
+import math
+import pandas as pd
+
+# for finding lat long
+import mercantile
+
+# To get place name
+import geopy
+from geopy.geocoders import Nominatim
+
+def getName(lat, lon):
+    
+    locator = Nominatim(user_agent="myGeocoder")
+    coordinates = str(lat)+", "+str(lon)
+    location = locator.reverse(coordinates)
+    location = str(location).split(",")
+
+    return location[0]
 
 
 class TileServer(object):
@@ -53,7 +71,14 @@ class TileServer(object):
                 result = self.loadimage(fullname, tilekey)
         return result
 
+
+        
+
+
 if __name__ == "__main__":
+
+    # Start the clock
+    start_time = time.time()
 
     ts = TileServer("ROADMAP")
     
@@ -68,11 +93,26 @@ if __name__ == "__main__":
     }
 
 
+    # Empty Data dict
+    my_data ={
+
+        "Sector":[],
+        "Lat":[],
+        "Long":[],
+        "Name":[],
+        "Greenery":[]
+    }
+
+
+
     # Getting all the images of a region
     # For zoom level 15
     # By dividing it into sub-tiles
     # Tile data from : https://www.maptiler.com/google-maps-coordinates-tile-bounds-projection/
-    # Code Inspiration : https://docs.microsoft.com/en-us/bingmaps/rest-services/imagery/get-a-static-map 
+    # Code Inspiration : 
+    # https://docs.microsoft.com/en-us/bingmaps/rest-services/imagery/get-a-static-map 
+    # https://discourse.metabase.com/t/satellite-map/7969
+    # https://docs.microsoft.com/en-us/bingmaps/rest-services/imagery/imagery-metadata
 
     count = 0
 
@@ -80,14 +120,41 @@ if __name__ == "__main__":
         for j in range(meta_data["begin_y"], meta_data["end_y"]+1):
 
             # Fetching the map-tile for satellite image
-            im_s = ts.tile_as_image(i,j,meta_data["zoom_level"])
+            # im_s = ts.tile_as_image(i,j,meta_data["zoom_level"])
 
+            # Finding the lat long
+            co_ordinates = mercantile.ul(i, j, meta_data["zoom_level"])
+            print(co_ordinates.lng , co_ordinates.lat)
+
+            # Storing the data
+            my_data["Sector"].append("sector"+str(count))
+            my_data["Lat"].append(co_ordinates.lat)
+            my_data["Long"].append(co_ordinates.lng)
+            my_data["Name"].append(getName(co_ordinates.lat, co_ordinates.lng))
+            my_data["Greenery"].append(0)
 
 
             # Saving the images/satellite
-            path_s = os.path.join("images","roadmap","sector"+str(count)+".png")
-            im_s.save(path_s)
+            # path_s = os.path.join("images","roadmap","sector"+str(count)+".png")
+            # im_s.save(path_s)
 
             print("The current count : ",count)
             count += 1
+
+            # Time wait
+            if(count % 100 == 0):
+                print("Sleeping now >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>")
+                time.sleep(60)
+
+
+    # Making a dataframe
+    df = pd.DataFrame.from_dict(my_data)
+    
+    # Saving as csv
+    path_to_csv = os.path.join("csv","greenery_percentage.csv")
+    df.to_csv(path_to_csv, index=False)
+    print("--- %s seconds ---" % (time.time() - start_time))
+
+
+
     
