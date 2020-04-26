@@ -56,24 +56,28 @@ if __name__ == '__main__':
 				if(j[1]>j[0] and j[1]>j[2] and j[0]<100 and j[2]<100):
 					green_pixel_count += 1
 
+		greenery_percentage = green_pixel_count*100/TOTAL_PIXELS
 		
 		# Find greenery | Keep lake bias check
+		if(greenery_percentage > 60):
+
+			roadmap_img = cv2.imread(os.path.join("images","roadmap",sector+".png"))
+			lake_pixel_count = 0
+
+			for i in roadmap_img:
+				for j in i:
+
+
+					# rgb(178, 207, 242)
+					if(j[0] == 242 and j[1] == 200 and j[2] == 172):
+						lake_pixel_count += 1
+
+			if(lake_pixel_count > 0):
+				green_pixel_count -= lake_pixel_count
+				print("-----------------percent count changed for sector : ",sector)
+
+		# Find greenery percentage
 		greenery_percentage = green_pixel_count*100/TOTAL_PIXELS
-		# if(greenery_percentage > 60):
-
-		# 	roadmap_img = cv2.imread(os.path.join("images","roadmap",sector+".png"))
-		# 	green_pixel_count = 0
-
-		# 	for i in roadmap_img:
-		# 		for j in i:
-
-		# 			if(j[1]>j[0] and j[1]>j[2] and j[0]<100 and j[2]<100):
-		# 				green_pixel_count += 1
-
-		# 	roadmap_percentage = green_pixel_count*100/TOTAL_PIXELS
-
-		# 	if(roadmap_percentage < greenery_percentage - 10):
-		# 		greenery_percentage = roadmap_percentage
 
 
 		# Enter data in file
