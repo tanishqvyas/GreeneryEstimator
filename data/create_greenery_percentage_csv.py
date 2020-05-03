@@ -52,6 +52,7 @@ if __name__ == '__main__':
 
 		green_pixel_count = 0
 
+		# Find green pixel count for each sector
 		for i in img:
 			for j in i:
 

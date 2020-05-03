@@ -3,8 +3,6 @@
 import sys
 for line in sys.stdin:
 
-
-
 	# Get each line of input
 	line = line.strip()
 

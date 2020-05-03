@@ -21,7 +21,7 @@ for line in sys.stdin:
         wordcount[word] = wordcount[word]+count
     except:
         wordcount[word] = count
- 
+
 # Write the tuples to stdout
 # Currently tuples are unsorted
 for word in wordcount.keys():

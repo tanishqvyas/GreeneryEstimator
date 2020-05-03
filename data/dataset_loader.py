@@ -122,6 +122,8 @@ if __name__ == "__main__":
             # Fetching the map-tile for satellite image
             # im_s = ts.tile_as_image(i,j,meta_data["zoom_level"])
 
+            print("The current count : ",count)
+
             # Finding the lat long
             co_ordinates = mercantile.ul(i, j, meta_data["zoom_level"])
             print(co_ordinates.lng , co_ordinates.lat)
@@ -138,14 +140,24 @@ if __name__ == "__main__":
             # path_s = os.path.join("images","roadmap","sector"+str(count)+".png")
             # im_s.save(path_s)
 
-            print("The current count : ",count)
-            count += 1
+
+
+            if(count % 10 == 0):
+                path_to_csv = os.path.join("csv","greenery_percentage.csv")
+                df = pd.DataFrame.from_dict(my_data)
+                df.to_csv(path_to_csv, index=False)
+
 
             # Time wait
             if(count % 100 == 0):
                 print("Sleeping now >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>")
-                time.sleep(60)
+                time.sleep(69)
+            if(count % 1000 == 0):
+                print("Mega sleep >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>")
+                time.sleep(200)
 
+
+            count += 1
 
     # Making a dataframe
     df = pd.DataFrame.from_dict(my_data)
