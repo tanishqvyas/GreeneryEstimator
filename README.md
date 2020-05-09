@@ -37,7 +37,8 @@ hadoop fs -put /home/hduser/Documents/greenery_percentage.csv /input1
 Navigate to hadoop streaming:  
 cd share/hadoop/tools/lib
 
-Execute MapReduce:  
+Execute MapReduce specifying all file paths:  
+
 hadoop jar hadoop-streaming-2.7.2 jar \
 -file /home/hduser/mapper.py \
 -file /home/hduser/reducer.py \
