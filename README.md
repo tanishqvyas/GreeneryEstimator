@@ -19,7 +19,6 @@
 |
 |
 |--- README.md
-|
 ```
 
 **Executing with hadoop version 2.7.2**
